@@ -974,7 +974,7 @@
             // Load each post card
             for (const postNum of posts) {
                 try {
-                    const response = await fetch(`./homepage-list/${postNum}.html`);
+                    const response = await fetch(`homepage-list/${postNum}.html`);
                     
                     if (!response.ok) {
                         console.warn(`Post ${postNum} not found`);
