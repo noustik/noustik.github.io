@@ -1,0 +1,1435 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noustik - Static Blog</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Noustiks Blog">
+    <meta property="og:description" content="A blog of atheist Noustik.">
+    <meta property="og:image" content="https://noustik.top/images/profile_photos/admin_photo.jpg">
+    <meta property="og:image:width" content="720">
+    <meta property="og:image:height" content="720">
+    <meta property="og:url" content="https://noustik.top/">
+    <meta property="og:type" content="blog">
+    <meta property="og:site_name" content="Noustik's Blog">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Noustiks Blog">
+    <meta name="twitter:description" content="A blog of atheist Noustik.">
+    <meta name="twitter:image" content="https://noustik.top/images/profile_photos/admin_photo.jpg">
+    
+    <link rel="preload" href="/arial.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        @font-face {
+            font-family: 'CustomArial';
+            src: url('/arial.ttf') format('truetype');
+            font-display: block;
+        }
+        
+        * {
+            font-family: 'CustomArial', Arial, Helvetica, sans-serif !important;
+        }
+        
+        body, h1, h2, h3, h4, h5, h6, p, div, span, input, textarea, button, select, label, .nav a, .btn, .post-title, .post-excerpt, .comment-text, .author-name, .logo, table, th, td, code, pre {
+            font-family: 'CustomArial', Arial, Helvetica, sans-serif;
+        }
+        
+        strong, b { font-weight: bold !important; }
+        em, i { font-style: italic !important; }
+        
+        mjx-container, .MathJax, .MJX-TEX, math {
+            font-family: MJXZERO, MJXTEX, serif !important;
+        }
+        
+        :root {
+            --bg-primary: #f4f4f4;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #555555;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0,0,0,0.1);
+            --font-size-multiplier: 1;
+            --current-font-family: 'CustomArial', Arial, Helvetica, sans-serif;
+        }
+        
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-card: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888888;
+            --border-color: #404040;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: calc(1rem * var(--font-size-multiplier));
+            font-family: var(--current-font-family);
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10001;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            user-select: none;
+            touch-action: none;
+            right: 20px;
+            top: 20px;
+        }
+        
+        .hamburger-btn:hover {
+            background: rgba(41, 128, 185, 0.95);
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .hamburger-btn.dragging {
+            transform: scale(1.15);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(231, 76, 60, 0.9);
+            cursor: grabbing !important;
+            z-index: 10003;
+        }
+        
+        .hamburger-btn.dragging::after {
+            content: "🚀 Moving...";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        .hamburger-btn.move-mode {
+            animation: pulse-glow 1.5s ease-in-out infinite;
+            background: rgba(241, 196, 15, 0.9);
+        }
+        
+        /* Drawer Styles */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10002;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+        
+        .drawer-overlay.active { opacity: 1; }
+        
+        .drawer-sidebar {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 300px;
+            height: 100%;
+            background: var(--bg-card);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 10003;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .drawer-sidebar.active { left: 0; }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .drawer-close:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .drawer-content { padding: 1.5rem; }
+        .drawer-section { margin-bottom: 1.5rem; }
+        
+        .drawer-section h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .drawer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .drawer-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .drawer-link:hover {
+            background: var(--bg-primary);
+            border-left-color: #3498db;
+            padding-left: 1.25rem;
+        }
+        
+        .drawer-link.active {
+            background: var(--bg-secondary);
+            border-left-color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .drawer-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        
+        .hamburger-icon {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .hamburger-line {
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-btn.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .hamburger-btn.active .hamburger-line:nth-child(2) { opacity: 0; }
+        
+        .hamburger-btn.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 1.5rem;
+        }
+        
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "🌙";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        input:checked + .slider {
+            background-color: #64b5f6;
+        }
+        
+        input:checked + .slider:before {
+            content: "☀️";
+            transform: translateX(30px);
+        }
+        
+        /* Font Control Button */
+        .font-control-btn {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            user-select: none;
+            touch-action: none;
+            left: 20px;
+            bottom: 20px;
+        }
+        
+        .font-control-btn:hover {
+            background: rgba(41, 128, 185, 0.95);
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .font-control-btn.dragging {
+            transform: scale(1.15);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(231, 76, 60, 0.9);
+            cursor: grabbing !important;
+            z-index: 10002;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(241, 196, 15, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(241, 196, 15, 0.9); }
+        }
+        
+        .font-control-btn.move-mode {
+            animation: pulse-glow 1.5s ease-in-out infinite;
+            background: rgba(241, 196, 15, 0.9);
+        }
+        
+        .font-control-panel {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            z-index: 10001;
+            min-width: 320px;
+            max-width: 400px;
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .font-control-panel.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+        
+        .font-control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .font-control-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .font-family-control { margin-bottom: 1.5rem; }
+        .font-family-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .font-family-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .font-size-control { margin-bottom: 1.5rem; }
+        .font-size-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .font-size-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-primary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .font-size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .font-size-value {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        
+        .font-size-presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preset-btn {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .preset-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .font-control-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn-apply {
+            flex: 1;
+            padding: 0.75rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .btn-reset {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .move-instructions {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(241, 196, 15, 0.9);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10003;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .move-instructions.show { opacity: 1; }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 1rem;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .post-card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .post-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .default-image-container {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .default-icon {
+            font-size: 4rem;
+        }
+        
+        .post-content {
+            padding: 20px;
+        }
+        
+        .post-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .post-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .post-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        
+        .post-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .read-more {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 40px 0;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+        
+        .pagination button {
+            padding: 10px 25px;
+            font-size: 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: #2980b9;
+        }
+        
+        .pagination button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            z-index: 1000;
+        }
+        
+        .back-to-top:hover {
+            background: #2980b9;
+            transform: translateY(-5px);
+        }
+        
+        @media (max-width: 768px) {
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            .hamburger-btn, .font-control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="hamburger-btn" id="hamburgerBtn" title="Click: Menu | Long Press: Move">
+        <div class="hamburger-icon">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </div>
+    </button>
+    
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    
+    <!-- Drawer Sidebar -->
+    <div class="drawer-sidebar" id="drawerSidebar">
+        <div class="drawer-header">
+            <div class="drawer-title">📱 Menu</div>
+            <button class="drawer-close" id="drawerCloseBtn">&times;</button>
+        </div>
+        <div class="drawer-content">
+            <div class="drawer-section">
+                <h3>Navigation</h3>
+                <ul class="drawer-links">
+                    <li><a href="/" class="drawer-link active">🏠 Home</a></li>
+                    <li><a href="/about-me/" class="drawer-link">👤 About Me</a></li>
+                </ul>
+            </div>
+            <div class="drawer-section">
+                <h3>Utility Tools</h3>
+                <ul class="drawer-links">
+                    <li><a href="/convert/bijoy" class="drawer-link">🔤 Bijoy Converter</a></li>
+                    <li><a href="/latex/latex/" class="drawer-link">📝 LaTeX Editor</a></li>
+                    <li><a href="/password-generator/" class="drawer-link">🔐 Password Generator</a></li>
+                    <li><a href="/compiler/online-c-compiler/" class="drawer-link">💻 Online C Compiler</a></li>
+                    <li><a href="/html-encoder/" class="drawer-link">⚡ Html Encoder</a></li>
+                    <li><a href="/qr-code-generator/" class="drawer-link">📲 QR Code Generator</a></li>
+                    <li><a href="/tools/xml-to-svg/" class="drawer-link">⚒️ Xml to Svg</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <small>© 2026 Noustik</small>
+        </div>
+    </div>
+    
+    <!-- Move Instructions -->
+    <div class="move-instructions" id="moveInstructions">
+        ✨ Move mode activated! Drag the button to desired position
+    </div>
+    
+    <!-- Font Control Overlay -->
+    <div class="overlay" id="fontControlOverlay"></div>
+    
+    <!-- Font Control Button -->
+    <button class="font-control-btn" id="fontControlBtn" title="Click: Font Size | Long Press: Move" style="display: none;">A⁺</button>
+    
+    <!-- Font Control Panel -->
+    <div class="font-control-panel" id="fontControlPanel">
+        <div class="font-control-header">
+            <span class="font-control-title">Font Settings</span>
+            <button class="close-btn" id="closeFontPanel">&times;</button>
+        </div>
+        <div class="font-family-control">
+            <label class="font-family-label">Select Font:</label>
+            <select class="font-family-select" id="fontFamilySelect">
+                <option value="CustomArial">Kalpurush</option>
+            </select>
+        </div>
+        <div class="font-size-control">
+            <label class="font-size-label">Adjust Font Size:</label>
+            <input type="range" class="font-size-slider" id="fontSizeSlider" min="0.8" max="1.5" step="0.1" value="1">
+            <div class="font-size-value" id="fontSizeValue">100%</div>
+        </div>
+        <div class="font-size-presets">
+            <button class="preset-btn" data-size="0.8">Small</button>
+            <button class="preset-btn active" data-size="1">Medium</button>
+            <button class="preset-btn" data-size="1.2">Large</button>
+        </div>
+        <div class="font-control-actions">
+            <button class="btn-reset" id="resetFontSize">Reset All</button>
+            <button class="btn-apply" id="applyFontSize">OK</button>
+        </div>
+    </div>
+    
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <a href="/" style="color: white; text-decoration: none;">Noustik's Blog</a>
+            </h1>
+            <nav class="nav">
+                <a href="/">Home</a>
+                <div class="theme-toggle">
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <a href="/about-me">About</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main">
+        <div class="container">
+            <h2 style="margin-bottom: 2rem;">Latest Posts</h2>
+            <div class="posts-grid" id="posts-container">
+                <div class="loading">Loading posts...</div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button id="prevButton" onclick="changePage(-1)">← Newer Posts</button>
+                <span id="pageInfo" class="page-info"></span>
+                <button id="nextButton" onclick="changePage(1)">Older Posts →</button>
+            </div>
+        </div>
+        
+        <!-- Back to Top Button -->
+        <button id="back-to-top" class="back-to-top" title="Back to Top">↑</button>
+    </main>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Noustik. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="js/script.js"></script>
+    
+    <script>
+        // ============================================
+        // CONFIGURATION - Update this when adding posts
+        // ============================================
+        const LATEST_POST = 999;      // Change to 1000 when you add post 1000
+        const POSTS_PER_PAGE = 20;    // Number of posts per page
+        
+        // ============================================
+        // PAGINATION STATE
+        // ============================================
+        let currentStart = LATEST_POST;
+        let isLoading = false;
+        
+        // Get posts for current page (in reverse order: newest first)
+        function getCurrentPosts() {
+            const posts = [];
+            let end = currentStart - POSTS_PER_PAGE + 1;
+            if (end < 1) end = 1;
+            
+            for (let i = currentStart; i >= end; i--) {
+                posts.push(i);
+            }
+            return posts;
+        }
+        
+        function hasNewerPosts() {
+            return currentStart < LATEST_POST;
+        }
+        
+        function hasOlderPosts() {
+            return (currentStart - POSTS_PER_PAGE) >= 1;
+        }
+        
+        async function loadPosts() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const posts = getCurrentPosts();
+            const container = document.getElementById('posts-container');
+            
+            // Show loading state
+            container.innerHTML = '<div class="loading">Loading posts...</div>';
+            
+            // Calculate page info
+            const currentPage = Math.ceil((LATEST_POST - currentStart) / POSTS_PER_PAGE) + 1;
+            const totalPages = Math.ceil(LATEST_POST / POSTS_PER_PAGE);
+            
+            // Update buttons
+            document.getElementById('prevButton').disabled = !hasNewerPosts();
+            document.getElementById('nextButton').disabled = !hasOlderPosts();
+            document.getElementById('pageInfo').innerHTML = `Page ${currentPage} of ${totalPages}`;
+            
+            // Clear container
+            container.innerHTML = '';
+            
+            let loadedCount = 0;
+            
+            // Load each post card
+            for (const postNum of posts) {
+                try {
+                    const response = await fetch(`/homepage-list/${postNum}.html`);
+                    
+                    if (!response.ok) {
+                        console.warn(`Post ${postNum} not found`);
+                        continue;
+                    }
+                    
+                    const html = await response.text();
+                    const postCard = document.createElement('div');
+                    postCard.innerHTML = html;
+                    container.appendChild(postCard.firstElementChild);
+                    loadedCount++;
+                    
+                } catch (error) {
+                    console.error(`Failed to load post ${postNum}:`, error);
+                }
+            }
+            
+            if (loadedCount === 0 && container.innerHTML === '') {
+                container.innerHTML = '<div class="loading">No posts found. Create homepage-list/ folder with post cards.</div>';
+            }
+            
+            isLoading = false;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function changePage(direction) {
+            if (direction === -1 && hasNewerPosts()) {
+                currentStart = currentStart + POSTS_PER_PAGE;
+                if (currentStart > LATEST_POST) currentStart = LATEST_POST;
+                loadPosts();
+            } 
+            else if (direction === 1 && hasOlderPosts()) {
+                currentStart = currentStart - POSTS_PER_PAGE;
+                if (currentStart < 1) currentStart = 1;
+                loadPosts();
+            }
+        }
+        
+        // ============================================
+        // HAMBURGER MENU
+        // ============================================
+        class HamburgerMenu {
+            constructor() {
+                this.isOpen = false;
+                this.isDragging = false;
+                this.longPressTimer = null;
+                this.longPressDuration = 500;
+                this.dragSpeed = 1.2;
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+            }
+            
+            bindEvents() {
+                const hamburgerBtn = document.getElementById('hamburgerBtn');
+                const drawerOverlay = document.getElementById('drawerOverlay');
+                const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+                const drawerSidebar = document.getElementById('drawerSidebar');
+                
+                hamburgerBtn.addEventListener('click', (e) => {
+                    if (!this.isDragging && !this.longPressTimer) {
+                        this.toggleDrawer();
+                    }
+                });
+                
+                drawerOverlay.addEventListener('click', () => this.closeDrawer());
+                drawerCloseBtn.addEventListener('click', () => this.closeDrawer());
+                
+                hamburgerBtn.addEventListener('mousedown', (e) => this.startLongPressTimer(e, 'mouse'));
+                hamburgerBtn.addEventListener('touchstart', (e) => this.startLongPressTimer(e, 'touch'));
+            }
+            
+            startLongPressTimer(e, type) {
+                this.longPressTimer = setTimeout(() => {
+                    this.enterMoveMode(e, type);
+                }, this.longPressDuration);
+            }
+            
+            cancelLongPress() {
+                if (this.longPressTimer) {
+                    clearTimeout(this.longPressTimer);
+                    this.longPressTimer = null;
+                }
+            }
+            
+            enterMoveMode(e, type) {
+                this.cancelLongPress();
+                this.showMoveInstructions();
+                const button = document.getElementById('hamburgerBtn');
+                button.classList.add('move-mode');
+                this.startDragging(e, type);
+            }
+            
+            showMoveInstructions() {
+                const instructions = document.getElementById('moveInstructions');
+                instructions.classList.add('show');
+                setTimeout(() => instructions.classList.remove('show'), 3000);
+            }
+            
+            startDragging(e, type) {
+                this.isDragging = true;
+                const button = document.getElementById('hamburgerBtn');
+                button.classList.add('dragging');
+                
+                const startX = type === 'mouse' ? e.clientX : e.touches[0].clientX;
+                const startY = type === 'mouse' ? e.clientY : e.touches[0].clientY;
+                const currentLeft = parseInt(button.style.left) || window.innerWidth - 70;
+                const currentTop = parseInt(button.style.top) || 20;
+                button.style.transition = 'none';
+                
+                const moveHandler = (moveEvent) => {
+                    if (!this.isDragging) return;
+                    const currentX = type === 'mouse' ? moveEvent.clientX : moveEvent.touches[0].clientX;
+                    const currentY = type === 'mouse' ? moveEvent.clientY : moveEvent.touches[0].clientY;
+                    const deltaX = (currentX - startX) * this.dragSpeed;
+                    const deltaY = (currentY - startY) * this.dragSpeed;
+                    const newLeft = Math.max(10, Math.min(window.innerWidth - 60, currentLeft + deltaX));
+                    const newTop = Math.max(10, Math.min(window.innerHeight - 60, currentTop + deltaY));
+                    button.style.left = newLeft + 'px';
+                    button.style.top = newTop + 'px';
+                    button.style.right = 'auto';
+                    button.style.bottom = 'auto';
+                };
+                
+                const stopHandler = () => {
+                    this.isDragging = false;
+                    button.style.transition = 'all 0.3s ease';
+                    button.classList.remove('dragging');
+                    button.classList.remove('move-mode');
+                    this.saveButtonPosition();
+                    document.removeEventListener(type === 'mouse' ? 'mousemove' : 'touchmove', moveHandler);
+                    document.removeEventListener(type === 'mouse' ? 'mouseup' : 'touchend', stopHandler);
+                };
+                
+                document.addEventListener(type === 'mouse' ? 'mousemove' : 'touchmove', moveHandler);
+                document.addEventListener(type === 'mouse' ? 'mouseup' : 'touchend', stopHandler, { once: true });
+                if (type === 'touch') e.preventDefault();
+            }
+            
+            saveButtonPosition() {
+                try {
+                    const button = document.getElementById('hamburgerBtn');
+                    const position = { left: button.style.left, top: button.style.top, right: button.style.right };
+                    localStorage.setItem('hamburgerButtonPosition', JSON.stringify(position));
+                } catch(e) {}
+            }
+            
+            toggleDrawer() {
+                this.isOpen ? this.closeDrawer() : this.openDrawer();
+            }
+            
+            openDrawer() {
+                const drawerOverlay = document.getElementById('drawerOverlay');
+                const drawerSidebar = document.getElementById('drawerSidebar');
+                const hamburgerBtn = document.getElementById('hamburgerBtn');
+                drawerOverlay.style.display = 'block';
+                setTimeout(() => drawerOverlay.classList.add('active'), 10);
+                drawerSidebar.classList.add('active');
+                hamburgerBtn.classList.add('active');
+                this.isOpen = true;
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeDrawer() {
+                const drawerOverlay = document.getElementById('drawerOverlay');
+                const drawerSidebar = document.getElementById('drawerSidebar');
+                const hamburgerBtn = document.getElementById('hamburgerBtn');
+                drawerOverlay.classList.remove('active');
+                drawerSidebar.classList.remove('active');
+                hamburgerBtn.classList.remove('active');
+                setTimeout(() => drawerOverlay.style.display = 'none', 300);
+                this.isOpen = false;
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // ============================================
+        // FONT SIZE CONTROL
+        // ============================================
+        class FontSizeControl {
+            constructor() {
+                this.currentSize = this.getSavedFontSize() || 1;
+                this.currentFont = this.getSavedFont() || 'CustomArial';
+                this.isPanelOpen = false;
+                this.isDragging = false;
+                this.longPressTimer = null;
+                this.longPressDuration = 500;
+                this.dragSpeed = 1.2;
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.applyFontSize(this.currentSize);
+                this.applyFontFamily(this.currentFont);
+                this.updateSlider(this.currentSize);
+            }
+            
+            bindEvents() {
+                const button = document.getElementById('fontControlBtn');
+                button.style.display = 'flex';
+                button.addEventListener('click', (e) => this.handleClick(e));
+                button.addEventListener('mousedown', (e) => this.startLongPressTimer(e, 'mouse'));
+                button.addEventListener('touchstart', (e) => this.startLongPressTimer(e, 'touch'));
+                document.getElementById('closeFontPanel').addEventListener('click', () => this.closePanel());
+                document.getElementById('applyFontSize').addEventListener('click', () => this.applyAndClose());
+                document.getElementById('resetFontSize').addEventListener('click', () => this.resetAll());
+                document.getElementById('fontFamilySelect').addEventListener('change', (e) => {
+                    this.currentFont = e.target.value;
+                    this.applyFontFamily(this.currentFont);
+                });
+                const slider = document.getElementById('fontSizeSlider');
+                slider.addEventListener('input', (e) => this.onSliderChange(e.target.value));
+                document.querySelectorAll('.preset-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.setPresetSize(e.target.dataset.size));
+                });
+                document.getElementById('fontControlOverlay').addEventListener('click', () => this.closePanel());
+            }
+            
+            handleClick(e) {
+                if (!this.isDragging && !this.longPressTimer) {
+                    this.togglePanel();
+                }
+            }
+            
+            startLongPressTimer(e, type) {
+                this.longPressTimer = setTimeout(() => this.enterMoveMode(e, type), this.longPressDuration);
+            }
+            
+            cancelLongPress() {
+                if (this.longPressTimer) clearTimeout(this.longPressTimer);
+            }
+            
+            enterMoveMode(e, type) {
+                this.cancelLongPress();
+                this.showMoveInstructions();
+                const button = document.getElementById('fontControlBtn');
+                button.classList.add('move-mode');
+                this.startDragging(e, type);
+            }
+            
+            showMoveInstructions() {
+                const instructions = document.getElementById('moveInstructions');
+                instructions.classList.add('show');
+                setTimeout(() => instructions.classList.remove('show'), 3000);
+            }
+            
+            startDragging(e, type) {
+                this.isDragging = true;
+                const button = document.getElementById('fontControlBtn');
+                button.classList.add('dragging');
+                const startX = type === 'mouse' ? e.clientX : e.touches[0].clientX;
+                const startY = type === 'mouse' ? e.clientY : e.touches[0].clientY;
+                const currentLeft = parseInt(button.style.left) || 20;
+                const currentTop = parseInt(button.style.top) || (window.innerHeight - 70);
+                button.style.transition = 'none';
+                
+                const moveHandler = (moveEvent) => {
+                    if (!this.isDragging) return;
+                    const currentX = type === 'mouse' ? moveEvent.clientX : moveEvent.touches[0].clientX;
+                    const currentY = type === 'mouse' ? moveEvent.clientY : moveEvent.touches[0].clientY;
+                    const deltaX = (currentX - startX) * this.dragSpeed;
+                    const deltaY = (currentY - startY) * this.dragSpeed;
+                    const newLeft = Math.max(10, Math.min(window.innerWidth - 60, currentLeft + deltaX));
+                    const newTop = Math.max(10, Math.min(window.innerHeight - 60, currentTop + deltaY));
+                    button.style.left = newLeft + 'px';
+                    button.style.top = newTop + 'px';
+                    button.style.bottom = 'auto';
+                };
+                
+                const stopHandler = () => {
+                    this.isDragging = false;
+                    button.style.transition = 'all 0.3s ease';
+                    button.classList.remove('dragging');
+                    button.classList.remove('move-mode');
+                    this.saveButtonPosition();
+                    document.removeEventListener(type === 'mouse' ? 'mousemove' : 'touchmove', moveHandler);
+                    document.removeEventListener(type === 'mouse' ? 'mouseup' : 'touchend', stopHandler);
+                };
+                
+                document.addEventListener(type === 'mouse' ? 'mousemove' : 'touchmove', moveHandler);
+                document.addEventListener(type === 'mouse' ? 'mouseup' : 'touchend', stopHandler, { once: true });
+                if (type === 'touch') e.preventDefault();
+            }
+            
+            saveButtonPosition() {
+                try {
+                    const button = document.getElementById('fontControlBtn');
+                    const position = { left: button.style.left, top: button.style.top };
+                    localStorage.setItem('fontButtonPosition', JSON.stringify(position));
+                } catch(e) {}
+            }
+            
+            togglePanel() {
+                this.isPanelOpen ? this.closePanel() : this.openPanel();
+            }
+            
+            openPanel() {
+                document.getElementById('fontControlPanel').classList.add('active');
+                document.getElementById('fontControlOverlay').classList.add('active');
+                this.isPanelOpen = true;
+                this.updateSlider(this.currentSize);
+            }
+            
+            closePanel() {
+                document.getElementById('fontControlPanel').classList.remove('active');
+                document.getElementById('fontControlOverlay').classList.remove('active');
+                this.isPanelOpen = false;
+            }
+            
+            applyAndClose() {
+                this.saveFontSize(this.currentSize);
+                this.saveFontFamily(this.currentFont);
+                this.closePanel();
+            }
+            
+            onSliderChange(value) {
+                const size = parseFloat(value);
+                this.currentSize = size;
+                this.applyFontSize(size);
+                this.updateDisplay(value);
+                this.updateActivePreset(size);
+            }
+            
+            setPresetSize(size) {
+                const numSize = parseFloat(size);
+                this.currentSize = numSize;
+                this.applyFontSize(numSize);
+                this.updateSlider(numSize);
+                this.updateDisplay(numSize);
+                this.updateActivePreset(numSize);
+            }
+            
+            applyFontSize(size) {
+                document.documentElement.style.setProperty('--font-size-multiplier', size);
+            }
+            
+            applyFontFamily(fontFamily) {
+                document.documentElement.style.setProperty('--current-font-family', fontFamily);
+                document.body.style.fontFamily = fontFamily;
+                document.querySelectorAll('*').forEach(el => el.style.fontFamily = fontFamily);
+            }
+            
+            updateSlider(value) {
+                document.getElementById('fontSizeSlider').value = value;
+                this.updateDisplay(value);
+            }
+            
+            updateDisplay(value) {
+                const percentage = Math.round(value * 100);
+                document.getElementById('fontSizeValue').textContent = `${percentage}%`;
+            }
+            
+            updateActivePreset(size) {
+                document.querySelectorAll('.preset-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (Math.abs(parseFloat(btn.dataset.size) - size) < 0.01) btn.classList.add('active');
+                });
+            }
+            
+            resetAll() {
+                this.currentSize = 1;
+                this.currentFont = 'CustomArial';
+                this.applyFontSize(1);
+                this.applyFontFamily('CustomArial');
+                this.updateSlider(1);
+                this.updateDisplay(1);
+                this.updateActivePreset(1);
+                this.saveFontSize(1);
+                this.saveFontFamily('CustomArial');
+            }
+            
+            saveFontSize(size) {
+                try { localStorage.setItem('fontSizeMultiplier', size); } catch(e) {}
+            }
+            
+            saveFontFamily(fontFamily) {
+                try { localStorage.setItem('fontFamily', fontFamily); } catch(e) {}
+            }
+            
+            getSavedFontSize() {
+                try { const saved = localStorage.getItem('fontSizeMultiplier'); return saved ? parseFloat(saved) : null; } catch(e) { return null; }
+            }
+            
+            getSavedFont() {
+                try { return localStorage.getItem('fontFamily'); } catch(e) { return null; }
+            }
+        }
+        
+        // ============================================
+        // BACK TO TOP BUTTON
+        // ============================================
+        class BackToTop {
+            constructor() {
+                this.button = document.getElementById('back-to-top');
+                this.init();
+            }
+            
+            init() {
+                window.addEventListener('scroll', () => this.toggleVisibility());
+                this.button.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                this.toggleVisibility();
+            }
+            
+            toggleVisibility() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > 300) {
+                    this.button.style.display = 'block';
+                    setTimeout(() => {
+                        this.button.style.opacity = '1';
+                        this.button.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    this.button.style.opacity = '0';
+                    this.button.style.transform = 'translateY(20px)';
+                    setTimeout(() => { if (window.pageYOffset < 300) this.button.style.display = 'none'; }, 300);
+                }
+            }
+        }
+        
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeCheckbox = document.getElementById('theme-checkbox');
+            const html = document.documentElement;
+            
+            function toggleTheme() {
+                const newTheme = themeCheckbox.checked ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                html.setAttribute('data-theme', savedTheme);
+                themeCheckbox.checked = (savedTheme === 'dark');
+            }
+            
+            if (themeCheckbox) themeCheckbox.addEventListener('change', toggleTheme);
+        });
+        
+        // ============================================
+        // INITIALIZE EVERYTHING
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            new HamburgerMenu();
+            new FontSizeControl();
+            new BackToTop();
+            loadPosts();
+        });
+    </script>
+</body>
+</html>
